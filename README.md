@@ -22,7 +22,7 @@ var sortcoll = require( "sortcoll" )
 ```
 
 
-## `sortcoll( keys, [forward=true] )``
+## `sortcoll( keys, [forward=true], [fnGet] )``
 
 **Usage** 
 
@@ -52,12 +52,48 @@ var sorted = data.sort( sortFunction );
 **Arguments:**
 
 - **keys** : *( `String|String[]` required )* A simple key to sort by or a list of keys sorted in the given order. Similar to sql `ORDER BY name, id`
-- **bar** : *( `Boolean` optional: default = `tue` )* Sort from a-z if `true`. Otherwsie from `z-a`
+- **forward** : *( `Boolean` optional: default = `true` )* Sort from a-z if `true`. Otherwise from `z-a`
+- **fnGet** : *( `Function` optional )* A optional function to get the sorting data from the element. Default is just `el[key]`
+
+
+## use `fnGet`
+
+Here's a small example to use the `fnGet` argument with e.g. backbone.
+
+```js
+var sortcoll = require( "sortcoll" )
+
+var data = [  
+  { id: 1, name: "Fritz" },
+  { id: 2, name: "Müller" },
+  { id: 3, name: "Meier" },
+  { id: 4, name: "Fritz" }
+];
+
+var fnGet = function( el, key ){
+    return el.get( key )
+};
+
+var sortFunction = sortcoll( [ "name", "id" ], false, fnGet );
+
+myCollection = new Backbone.Collection( data, comparator: sortFunction )
+
+var myCollection.toJSON();
+/*
+[
+    { id: 1, name: "Fritz" },
+    { id: 4, name: "Fritz" },
+    { id: 3, name: "Meier" },
+    { id: 2, name: "Müller" }
+]
+*/
+```
 
 ## Release History
 |Version|Date|Description|
-|:--:|:--:|:--|
-|0.0.1|2016-3-4|Initial commit|
+|:--:|:--:|:--|t 
+|0.1.0|2016-03-22|Added the `fnGet` option.|
+|0.0.1|2016-03-04|Initial commit|
 
 [![NPM](https://nodei.co/npm-dl/sortcoll.png?months=6)](https://nodei.co/npm/sortcoll/)
 

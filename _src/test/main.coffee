@@ -20,21 +20,40 @@ testListB = [
 	{ id: 7, name: "Bar" },
 ]
 
+class Model
+	constructor: ( data )->
+		@data = {}
+		for _k, _v of data
+			@data[ _k ] = _v
+		return
+	get: ( key )->
+		return @data[ key ]
+
 largeList = require( "../testdata.json" )
+
+testColl = []
+for el in testListB
+	testColl.push new Model( el )
 
 test = ( list, exp, key="id" )->
 	for el, idx in list
 		if not exp[idx]?
 			break
-		el[ key ].should.eql( exp[ idx ] )
+		if el.get?
+			el.get( key ).should.eql( exp[ idx ] )
+		else
+			el[ key ].should.eql( exp[ idx ] )
 	return
 		
 describe "----- sortcoll TESTS -----", ->
 	sorter = []
 	before ( done )->
+		fnGet = ( el, key )->
+			return el.get( key )
 		sorter.push sortcoll( [ "name", "id" ] )
 		sorter.push sortcoll( [ "name", "id" ], false )
 		sorter.push sortcoll( "id" )
+		sorter.push sortcoll( [ "name", "id" ], true, fnGet )
 		done()
 		return
 	
@@ -73,6 +92,15 @@ describe "----- sortcoll TESTS -----", ->
 			largeList.sort( sorter[0] ),
 			[ "Abbott Trujillo", "Abigail Nunez", "Adams Holman", "Adela Hawkins" ],
 			"name"
+		)
+		return
+	
+	it "sort with fnGet", ->
+		
+			
+		test(
+			testColl.sort( sorter[3] ),
+			[ 7, 23, 1337, 666, 42, 13 ]
 		)
 		return
 	return

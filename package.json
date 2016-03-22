@@ -1,6 +1,6 @@
 {
 	"name": "sortcoll",
-	"version": "0.0.1",
+	"version": "0.1.0",
 	"description": "Simple function to create a collection sort function for multiple keys",
 	"keywords": [],
 	"homepage": "https://github.com/mpneuried/sortcoll",
@@ -24,7 +24,7 @@
 	"license": "MIT",
 	"dependencies": {},
 	"devDependencies": {
-		"should": "4.3.x",
+		"should": "8.2.x",
 		"grunt": "0.4.x",
 		"grunt-regarde": "*",
 		"grunt-contrib-coffee": "*",
