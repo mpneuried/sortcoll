@@ -14,17 +14,17 @@ module.exports = ( keys, forward=true, getKey=_getKey )->
 		if nextkeys?.length
 			_k = nextkeys.splice(0,1)?[0]
 			nextSort = fnsort( forward, _k, nextkeys ) if _k?
+		_fwrd = ( if forward[ key ]? then forward[ key ] else ( if forward[ "?" ]? then forward[ "?" ] else forward) )
 		return ( elA, elB )->
 			_a = getKey( elA, key )
 			_b = getKey( elB, key )
 			if _a < _b
-				return if forward then -1 else 1
+				return if _fwrd then -1 else 1
 			else if _a > _b
-				return if forward then 1 else -1
+				return if _fwrd then 1 else -1
 			else if _a is _b
 				if nextSort?
 					return nextSort( elA, elB )
 				else
 					return 0
-					
-	return fnsort( forward, keys.splice(0,1), keys )
+	return fnsort( forward, keys.splice(0,1)?[0], keys )

@@ -12,12 +12,12 @@ testListA = [
 ]
 
 testListB = [
-	{ id: 13, name: "Foo" },
-	{ id: 1337, name: "Bar" },
-	{ id: 42, name: "Fizz" },
-	{ id: 23, name: "Bar" },
-	{ id: 666, name: "Buzz" }
-	{ id: 7, name: "Bar" },
+	{ id: 13, name: "Foo", age: 42 },
+	{ id: 1337, name: "Bar", age: 666 },
+	{ id: 42, name: "Fizz", age: 23 },
+	{ id: 23, name: "Bar", age: 23 },
+	{ id: 666, name: "Buzz", age: 13 }
+	{ id: 7, name: "Bar", age: 23 },
 ]
 
 class Model
@@ -36,6 +36,7 @@ for el in testListB
 	testColl.push new Model( el )
 
 test = ( list, exp, key="id" )->
+	#console.log "RES",  list, exp
 	for el, idx in list
 		if not exp[idx]?
 			break
@@ -54,6 +55,10 @@ describe "----- sortcoll TESTS -----", ->
 		sorter.push sortcoll( [ "name", "id" ], false )
 		sorter.push sortcoll( "id" )
 		sorter.push sortcoll( [ "name", "id" ], true, fnGet )
+		sorter.push sortcoll( [ "name", "id" ], { name: false, id: true } )
+		sorter.push sortcoll( [ "age", "name", "id" ], { name: false, id: true, age: false } )
+		sorter.push sortcoll( [ "age", "name", "id" ], { age: false, "?": true } )
+		sorter.push sortcoll( [ "age", "name", "id" ], { age: false, "?": true  }, fnGet )
 		done()
 		return
 	
@@ -96,11 +101,38 @@ describe "----- sortcoll TESTS -----", ->
 		return
 	
 	it "sort with fnGet", ->
-		
-			
 		test(
 			testColl.sort( sorter[3] ),
 			[ 7, 23, 1337, 666, 42, 13 ]
 		)
 		return
+	
+	it "sort with mixed forwards", ->
+		test(
+			testListB.sort( sorter[4] ),
+			[ 13, 42, 666, 7, 23, 1337]
+		)
+		return
+		
+	it "sort with mixed forwards and 3 sort cols", ->
+		test(
+			testListB.sort( sorter[5] ),
+			[ 1337, 13, 42, 7, 23, 666 ]
+		)
+		return
+		
+	it "sort with mixed fallback forward and 3 sort cols", ->
+		test(
+			testListB.sort( sorter[6] ),
+			[ 1337, 13, 7, 23, 42, 666 ]
+		)
+		return
+		
+	it "sort with mixed fallback forward, 3 sort cols and the fnGet", ->
+		test(
+			testColl.sort( sorter[7] ),
+			[ 1337, 13, 7, 23, 42, 666 ]
+		)
+		return
+		
 	return

@@ -1,6 +1,6 @@
 {
 	"name": "sortcoll",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Simple function to create a collection sort function for multiple keys",
 	"keywords": [],
 	"homepage": "https://github.com/mpneuried/sortcoll",

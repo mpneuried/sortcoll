@@ -52,11 +52,13 @@ var sorted = data.sort( sortFunction );
 **Arguments:**
 
 - **keys** : *( `String|String[]` required )* A simple key to sort by or a list of keys sorted in the given order. Similar to sql `ORDER BY name, id`
-- **forward** : *( `Boolean` optional: default = `true` )* Sort from a-z if `true`. Otherwise from `z-a`
+- **forward** : *( `Boolean|Object` optional: default = `true` )* Sort from a-z if `true`. Otherwise from `z-a`. You can set the direction for the sort keys separately by using an object. If you set a object key `?` this will be used for every not undefined key.
 - **fnGet** : *( `Function` optional )* A optional function to get the sorting data from the element. Default is just `el[key]`
 
 
-## use `fnGet`
+## Advanced example
+
+**with `fnGet` and mixed forward**
 
 Here's a small example to use the `fnGet` argument with e.g. backbone.
 
@@ -64,27 +66,31 @@ Here's a small example to use the `fnGet` argument with e.g. backbone.
 var sortcoll = require( "sortcoll" )
 
 var data = [  
-  { id: 1, name: "Fritz" },
-  { id: 2, name: "Müller" },
-  { id: 3, name: "Meier" },
-  { id: 4, name: "Fritz" }
+	{ id: 13, name: "Foo", age: 42 },
+	{ id: 1337, name: "Bar", age: 666 },
+	{ id: 42, name: "Fizz", age: 23 },
+	{ id: 23, name: "Bar", age: 23 },
+	{ id: 666, name: "Buzz", age: 13 }
+	{ id: 7, name: "Bar", age: 23 },
 ];
 
 var fnGet = function( el, key ){
     return el.get( key )
 };
 
-var sortFunction = sortcoll( [ "name", "id" ], false, fnGet );
+var sortFunction = sortcoll( [ "name", "id" ], { age: false, "?": true }, fnGet );
 
 myCollection = new Backbone.Collection( data, comparator: sortFunction )
 
 var myCollection.toJSON();
 /*
 [
-    { id: 1, name: "Fritz" },
-    { id: 4, name: "Fritz" },
-    { id: 3, name: "Meier" },
-    { id: 2, name: "Müller" }
+    { id: 1337, name: "Bar", age: 666 },
+    { id: 13, name: "Foo", age: 42 },
+    { id: 7, name: "Bar", age: 23 },
+    { id: 23, name: "Bar", age: 23 },
+    { id: 42, name: "Fizz", age: 23 },
+    { id: 666, name: "Buzz", age: 13 }
 ]
 */
 ```
@@ -92,6 +98,7 @@ var myCollection.toJSON();
 ## Release History
 |Version|Date|Description|
 |:--:|:--:|:--|t 
+|0.2.0|2016-03-22|added mixed forwarding|
 |0.1.0|2016-03-22|Added the `fnGet` option.|
 |0.0.1|2016-03-04|Initial commit|
 
